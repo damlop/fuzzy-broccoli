@@ -8,6 +8,7 @@ import com.mycompany.peliculas.Alquileres.PeliculaRentada;
 import com.mycompany.peliculas.Clientes.Cliente;
 import com.mycompany.peliculas.PanelMain;
 import com.mycompany.peliculas.Peliculas.PanelPeliculas;
+import com.mycompany.peliculas.Peliculas.Pelicula;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.FileReader;
@@ -31,14 +32,19 @@ public class PanelAlquileres extends javax.swing.JFrame {
     /**
      * Creates new form PanelAlquileres
      */
-    List<Integer> indice = new ArrayList();
-    List<PeliculaRentada> lista = new ArrayList();
+    List<Integer> indiceAlquileres = new ArrayList();
+    List<PeliculaRentada> listaAlquileres = new ArrayList();
+    List<Pelicula> listaPeliculas = new ArrayList();
+    List<Cliente> listaClientes = new ArrayList();
+    
     private boolean modificar = false;
-    boolean secondList = false;
+    private boolean secondList = false;
     
     public PanelAlquileres() {
         initComponents();
         llenar();
+        llenarClientes();
+        llenarPeliculas();
     }
     private String rentaToString(PeliculaRentada pelicula){
         return pelicula.getId() + ";" + pelicula.getNombre() + ";" + pelicula.getIdCliente() + ";" + pelicula.getFechaPedida();
@@ -66,12 +72,12 @@ public class PanelAlquileres extends javax.swing.JFrame {
             String buffer;
             BufferedReader reader = new BufferedReader(new FileReader("rentadas.txt"));
             while((buffer = reader.readLine()) != null){
-                lista.add(StringToRenta(buffer));
+                listaAlquileres.add(StringToRenta(buffer));
             }
         } catch (IOException ex) {
             Logger.getLogger(PanelPeliculas.class.getName()).log(Level.SEVERE, null, ex);
         }
-        actualizar(null);
+        actualizarAlquiladas(null);
     }
     /**
      * This method is called from within the constructor to initialize the form.
@@ -93,7 +99,7 @@ public class PanelAlquileres extends javax.swing.JFrame {
         txtFecha = new javax.swing.JTextField();
         btnGuardar = new javax.swing.JToggleButton();
         jScrollPane1 = new javax.swing.JScrollPane();
-        listClientes = new javax.swing.JList<>();
+        listAlquileres = new javax.swing.JList<>();
         tglId = new javax.swing.JToggleButton();
         tglNombre = new javax.swing.JToggleButton();
         tglFecha = new javax.swing.JToggleButton();
@@ -108,6 +114,7 @@ public class PanelAlquileres extends javax.swing.JFrame {
         listUsuarios = new javax.swing.JList<>();
         jScrollPane3 = new javax.swing.JScrollPane();
         listPeliculas = new javax.swing.JList<>();
+        btnRentar = new javax.swing.JButton();
 
         jLabel3.setText("IDcliente:");
 
@@ -145,23 +152,23 @@ public class PanelAlquileres extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
-        listClientes.setFont(new java.awt.Font("Monospaced", 0, 12)); // NOI18N
-        listClientes.addFocusListener(new java.awt.event.FocusAdapter() {
+        listAlquileres.setFont(new java.awt.Font("Monospaced", 0, 12)); // NOI18N
+        listAlquileres.addFocusListener(new java.awt.event.FocusAdapter() {
             public void focusGained(java.awt.event.FocusEvent evt) {
-                listClientesFocusGained(evt);
+                listAlquileresFocusGained(evt);
             }
         });
-        listClientes.addMouseListener(new java.awt.event.MouseAdapter() {
+        listAlquileres.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
-                listClientesMouseClicked(evt);
+                listAlquileresMouseClicked(evt);
             }
         });
-        listClientes.addListSelectionListener(new javax.swing.event.ListSelectionListener() {
+        listAlquileres.addListSelectionListener(new javax.swing.event.ListSelectionListener() {
             public void valueChanged(javax.swing.event.ListSelectionEvent evt) {
-                listClientesValueChanged(evt);
+                listAlquileresValueChanged(evt);
             }
         });
-        jScrollPane1.setViewportView(listClientes);
+        jScrollPane1.setViewportView(listAlquileres);
 
         tglId.setText("ID");
         tglId.addActionListener(new java.awt.event.ActionListener() {
@@ -244,13 +251,20 @@ public class PanelAlquileres extends javax.swing.JFrame {
 
         jTabbedPane1.addTab("Peliculas", jScrollPane3);
 
+        btnRentar.setText("Rentar");
+        btnRentar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnRentarActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addGroup(layout.createSequentialGroup()
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(btnMostrar)
@@ -268,9 +282,11 @@ public class PanelAlquileres extends javax.swing.JFrame {
                                     .addComponent(btnBuscarCliente, javax.swing.GroupLayout.DEFAULT_SIZE, 111, Short.MAX_VALUE)
                                     .addComponent(btnRegresar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                                 .addGap(18, 18, 18)
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(btnEliminar)
-                                    .addComponent(btnSalir, javax.swing.GroupLayout.PREFERRED_SIZE, 72, javax.swing.GroupLayout.PREFERRED_SIZE)))))
+                                .addComponent(btnEliminar)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                    .addComponent(btnRentar, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(btnSalir, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))))
                     .addGroup(layout.createSequentialGroup()
                         .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 313, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(18, 18, 18)
@@ -293,13 +309,14 @@ public class PanelAlquileres extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnEliminar)
                     .addComponent(btnBuscarPeli)
-                    .addComponent(btnMostrar))
+                    .addComponent(btnMostrar)
+                    .addComponent(btnRentar))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(btnBuscarCliente)
-                    .addComponent(btnSalir))
+                .addComponent(btnBuscarCliente)
                 .addGap(5, 5, 5)
-                .addComponent(btnRegresar)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(btnRegresar)
+                    .addComponent(btnSalir))
                 .addContainerGap())
         );
 
@@ -315,7 +332,7 @@ public class PanelAlquileres extends javax.swing.JFrame {
        Cliente cliente = new Cliente(Integer.parseInt(partes[0]), partes[1], partes[2], Integer.parseInt(partes[3]));
        return cliente;
     }
-        private void llenarClientes(){
+    private void llenarClientes(){
             /*
         Cliente cliente = new Cliente(1563, "Martin Gomez","San Martin 4219", 42150225);
         Cliente cliente2 = new Cliente(1539, "Fernanda Ludueña", "Moncalvo 8624", 25368741);
@@ -331,9 +348,61 @@ public class PanelAlquileres extends javax.swing.JFrame {
        try {
             String buffer;
             BufferedReader reader = new BufferedReader(new FileReader("clientes.txt"));
+            DefaultListModel dato = new DefaultListModel();
+            Cliente cliente = new Cliente();
+            
             while((buffer = reader.readLine()) != null){
-                lista.add(StringToClient(buffer));
+                cliente = StringToClient(buffer);
+                dato.addElement(cliente.toString());
+                listaClientes.add(cliente);
             }
+            this.listUsuarios.setModel(dato);
+            this.listUsuarios.clearSelection();
+        } catch (IOException ex) {
+            Logger.getLogger(PanelPeliculas.class.getName()).log(Level.SEVERE, null, ex);
+        }
+       
+        
+    }
+        
+    private String peliToString(Pelicula pelicula){
+        return pelicula.getId() + ";" + pelicula.getStock() + ";" + pelicula.getNombre() + ";" 
+                + pelicula.getAutor() + ";" + pelicula.getPaisDeOrigen() + ";" + pelicula.getDuracion()
+                + ";" + pelicula.getGenero();
+    }
+    private Pelicula StringToPeli(String string){
+       String[] partes = string.split(";");
+       Pelicula pelicula = new Pelicula(Integer.parseInt(partes[0]), Integer.parseInt(partes[1]), partes[2], partes[3], partes[4], Integer.parseInt(partes[5]), partes[6]);
+       return pelicula;
+    }
+    private void llenarPeliculas(){
+        /*
+        Pelicula pelicula  = new Pelicula(001, "Hachiko", 10);
+        Pelicula pelicula1 = new Pelicula(002, "Star Wars", 15);
+        Pelicula pelicula2 = new Pelicula(003, "Que paso ayer", 05);
+        Pelicula pelicula3 = new Pelicula(004, "Lo que el agua se llevo", 05);
+        Pelicula pelicula4 = new Pelicula(005, "Indiana Jones", 10);
+
+       
+        lista.add(pelicula);
+        lista.add(pelicula1);
+        lista.add(pelicula2);
+        lista.add(pelicula3);
+        lista.add(pelicula4);
+        */
+        try {
+            DefaultListModel dato = new DefaultListModel();
+            String buffer;
+            Pelicula pelicula = new Pelicula();
+            BufferedReader reader = new BufferedReader(new FileReader("peliculas.txt"));
+            while((buffer = reader.readLine()) != null){
+                pelicula = StringToPeli(buffer);
+                listaPeliculas.add(pelicula);
+                dato.addElement(pelicula.toString());
+                  
+            }
+            this.listPeliculas.setModel(dato);
+            this.listPeliculas.clearSelection();
         } catch (IOException ex) {
             Logger.getLogger(PanelPeliculas.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -342,43 +411,44 @@ public class PanelAlquileres extends javax.swing.JFrame {
     }
     private void btnGuardarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGuardarActionPerformed
         
-        int i = listClientes.getSelectedIndex();
+        int i = listAlquileres.getSelectedIndex();
         PeliculaRentada pelicula = new PeliculaRentada();
         pelicula.setNombre(this.txtNombre.getText());
         pelicula.setId(Integer.parseInt(this.txtID.getText()));
         pelicula.setFechaPedida(this.txtFecha.getText());
         pelicula.setIdCliente(Integer.parseInt(txtCliente.getText()));
         if(secondList){
-            int j = indice.get(i);
+            int j = indiceAlquileres.get(i);
             if(modificar){
-                lista.set(j, pelicula);
+                
+                listaAlquileres.set(j, pelicula);
                 modificar = false;
             }else{
-                lista.add(pelicula);
+                listaAlquileres.add(pelicula);
             }
            
         }else{
             if(modificar){
-                lista.set(i, pelicula);
+                listaAlquileres.set(i, pelicula);
                 modificar = false;
             }else{
-                lista.add(pelicula);
+                listaAlquileres.add(pelicula);
             }
         }
-        actualizar(null);
+        actualizarAlquiladas(null);
         limpiarTexto();
     }//GEN-LAST:event_btnGuardarActionPerformed
 
-    private void listClientesFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_listClientesFocusGained
+    private void listAlquileresFocusGained(java.awt.event.FocusEvent evt) {//GEN-FIRST:event_listAlquileresFocusGained
         
         PeliculaRentada pelicula = new PeliculaRentada();
-        int i = this.listClientes.getSelectedIndex();
+        int i = this.listAlquileres.getSelectedIndex();
         
         if(this.secondList){     
-            int j = this.indice.get(i);
-            pelicula = lista.get(j);
+            int j = this.indiceAlquileres.get(i);
+            pelicula = listaAlquileres.get(j);
         }else{
-            pelicula = lista.get(i);
+            pelicula = listaAlquileres.get(i);
         }
         
         this.txtCliente.setText(Integer.toString(pelicula.getIdCliente()));
@@ -388,18 +458,18 @@ public class PanelAlquileres extends javax.swing.JFrame {
 
         modificar = true;
         
-    }//GEN-LAST:event_listClientesFocusGained
+    }//GEN-LAST:event_listAlquileresFocusGained
 
-    private void listClientesMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_listClientesMouseClicked
+    private void listAlquileresMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_listAlquileresMouseClicked
         
         PeliculaRentada pelicula = new PeliculaRentada();
-        int i = this.listClientes.getSelectedIndex();
+        int i = this.listAlquileres.getSelectedIndex();
         
         if(this.secondList){     
-            int j = this.indice.get(i);
-            pelicula = lista.get(j);
+            int j = this.indiceAlquileres.get(i);
+            pelicula = listaAlquileres.get(j);
         }else{
-            pelicula = lista.get(i);
+            pelicula = listaAlquileres.get(i);
         }
         
         this.txtCliente.setText(Integer.toString(pelicula.getIdCliente()));
@@ -408,18 +478,18 @@ public class PanelAlquileres extends javax.swing.JFrame {
         this.txtID.setText(Integer.toString(pelicula.getId()));
 
         modificar = true;
-    }//GEN-LAST:event_listClientesMouseClicked
+    }//GEN-LAST:event_listAlquileresMouseClicked
 
-    private void listClientesValueChanged(javax.swing.event.ListSelectionEvent evt) {//GEN-FIRST:event_listClientesValueChanged
+    private void listAlquileresValueChanged(javax.swing.event.ListSelectionEvent evt) {//GEN-FIRST:event_listAlquileresValueChanged
         
         PeliculaRentada pelicula = new PeliculaRentada();
-        int i = this.listClientes.getSelectedIndex();
+        int i = this.listAlquileres.getSelectedIndex();
         
         if(this.secondList){     
-            int j = this.indice.get(i);
-            pelicula = lista.get(j);
+            int j = this.indiceAlquileres.get(i);
+            pelicula = listaAlquileres.get(j);
         }else{
-            pelicula = lista.get(i);
+            pelicula = listaAlquileres.get(i);
         }
         
         this.txtCliente.setText(Integer.toString(pelicula.getIdCliente()));
@@ -428,7 +498,7 @@ public class PanelAlquileres extends javax.swing.JFrame {
         this.txtID.setText(Integer.toString(pelicula.getId()));
 
         modificar = true;
-    }//GEN-LAST:event_listClientesValueChanged
+    }//GEN-LAST:event_listAlquileresValueChanged
 
     private void txtIDActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtIDActionPerformed
         // TODO add your handling code here:
@@ -438,13 +508,13 @@ public class PanelAlquileres extends javax.swing.JFrame {
         int i = 0;
         boolean cambio = true;
         PeliculaRentada cliente = new PeliculaRentada();
-        while(i < lista.size()-1 && cambio) {
+        while(i < listaAlquileres.size()-1 && cambio) {
             cambio = false;
-            for (int j = 0; j < lista.size()-1-i; j++) {
-                if(lista.get(j).getIdCliente() > lista.get(j+1).getIdCliente()){
-                    cliente = lista.get(j);
-                    lista.set(j, lista.get(j+1));
-                    lista.set(j+1, cliente);
+            for (int j = 0; j < listaAlquileres.size()-1-i; j++) {
+                if(listaAlquileres.get(j).getIdCliente() > listaAlquileres.get(j+1).getIdCliente()){
+                    cliente = listaAlquileres.get(j);
+                    listaAlquileres.set(j, listaAlquileres.get(j+1));
+                    listaAlquileres.set(j+1, cliente);
                     cambio = true;
                 }
 
@@ -452,9 +522,9 @@ public class PanelAlquileres extends javax.swing.JFrame {
             i++;
         }
                 if(secondList){
-            actualizar(indice);
+            actualizarAlquiladas(indiceAlquileres);
         }else{
-            actualizar(null);
+            actualizarAlquiladas(null);
         }
     }//GEN-LAST:event_tglIdActionPerformed
 
@@ -466,22 +536,22 @@ public class PanelAlquileres extends javax.swing.JFrame {
         int i = 0;
         boolean cambio = true;
         PeliculaRentada cliente = new PeliculaRentada();
-        while(i < lista.size()-1 && cambio) {
+        while(i < listaAlquileres.size()-1 && cambio) {
             cambio = false;
-            for (int j = 0; j < lista.size()-1-i; j++) {
-                if(lista.get(j).getNombre().compareTo(lista.get(j+1).getNombre()) > 0){
-                    cliente = lista.get(j);
-                    lista.set(j, lista.get(j+1));
-                    lista.set(j+1, cliente);
+            for (int j = 0; j < listaAlquileres.size()-1-i; j++) {
+                if(listaAlquileres.get(j).getNombre().compareTo(listaAlquileres.get(j+1).getNombre()) > 0){
+                    cliente = listaAlquileres.get(j);
+                    listaAlquileres.set(j, listaAlquileres.get(j+1));
+                    listaAlquileres.set(j+1, cliente);
                     cambio = true;
                 }
             }
             i++;
         }
         if(secondList){
-            actualizar(indice);
+            actualizarAlquiladas(indiceAlquileres);
         }else{
-            actualizar(null);
+            actualizarAlquiladas(null);
         }
     }//GEN-LAST:event_tglNombreActionPerformed
 
@@ -489,36 +559,36 @@ public class PanelAlquileres extends javax.swing.JFrame {
         int i = 0;
         boolean cambio = true;
         PeliculaRentada pelicula = new PeliculaRentada();
-        while(i < lista.size()-1 && cambio) {
+        while(i < listaAlquileres.size()-1 && cambio) {
             cambio = false;
-            for (int j = 0; j < lista.size()-1-i; j++) {
-                if(lista.get(j).getFechaPedida().equalsIgnoreCase(lista.get(1+j).getFechaPedida())){
-                    pelicula = lista.get(j);
-                    lista.set(j, lista.get(j+1));
-                    lista.set(j+1, pelicula);
+            for (int j = 0; j < listaAlquileres.size()-1-i; j++) {
+                if(listaAlquileres.get(j).getFechaPedida().equalsIgnoreCase(listaAlquileres.get(1+j).getFechaPedida())){
+                    pelicula = listaAlquileres.get(j);
+                    listaAlquileres.set(j, listaAlquileres.get(j+1));
+                    listaAlquileres.set(j+1, pelicula);
                     cambio = true;
                 }
             }
             i++;
         }
                if(secondList){
-            actualizar(indice);
+            actualizarAlquiladas(indiceAlquileres);
         }else{
-            actualizar(null);
+            actualizarAlquiladas(null);
         }
     }//GEN-LAST:event_tglFechaActionPerformed
 
     private void btnMostrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnMostrarActionPerformed
-        int i = listClientes.getSelectedIndex();
+        int i = listAlquileres.getSelectedIndex();
         if(i == -1){
             JOptionPane.showMessageDialog(rootPane, "Seleccione una pelicula");
         }else{
             
            if(secondList){
-                i = indice.get(i);
+                i = indiceAlquileres.get(i);
             }
             
-            PeliculaRentada pelicula = lista.get(i);
+            PeliculaRentada pelicula = listaAlquileres.get(i);
             JOptionPane.showMessageDialog(rootPane, "Nombre : " + pelicula.getNombre() +
                 "\nID : " +  pelicula.getId()+
                 "\nID Cliente : " + pelicula.getIdCliente() +
@@ -532,32 +602,44 @@ public class PanelAlquileres extends javax.swing.JFrame {
     }//GEN-LAST:event_btnLimpiarActionPerformed
 
     private void btnEliminarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEliminarActionPerformed
-        int i = listClientes.getSelectedIndex();
+        int i = listAlquileres.getSelectedIndex();
+        String titulo;
         if(secondList){
-            int j = indice.get(i);
-            lista.remove(j);
-            indice.remove(i);
-            actualizar(indice);
+            int j = indiceAlquileres.get(i);
+            titulo = listaAlquileres.get(j).getNombre();
+            listaAlquileres.remove(j);
+            indiceAlquileres.remove(i);
+            actualizarAlquiladas(indiceAlquileres);
         }else{
-            lista.remove(i);
-            actualizar(null);
-        }    
+            titulo = listaAlquileres.get(i).getNombre();
+            listaAlquileres.remove(i);
+            actualizarAlquiladas(null);
+        }  
+        /*
+        i = 0;
+        while(!titulo.equalsIgnoreCase(listaPeliculas.get(i).getNombre())){
+            i ++;
+        }
+        listaPeliculas.get(i).addStock();
+        
+        actualizarPeliculas();
+        */
     }//GEN-LAST:event_btnEliminarActionPerformed
 
     private void btnBuscarPeliActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBuscarPeliActionPerformed
         String nombre = (JOptionPane.showInputDialog(rootPane, "Nombre: "));
         int i = 0;
-        this.indice.clear();
-        while(i < lista.size()){
-            if(nombre.equalsIgnoreCase(lista.get(i).getNombre())){
-                indice.add(i);
+        this.indiceAlquileres.clear();
+        while(i < listaAlquileres.size()){
+            if(nombre.equalsIgnoreCase(listaAlquileres.get(i).getNombre())){
+                indiceAlquileres.add(i);
             }
                 i++;
         }
         
-        if(this.indice.size() > 0){
+        if(this.indiceAlquileres.size() > 0){
             secondList = true;
-            actualizar(indice);    
+            actualizarAlquiladas(indiceAlquileres);    
         }else{
             JOptionPane.showMessageDialog(rootPane, "Pelicula no encontrada en alquileres");
         }
@@ -565,7 +647,8 @@ public class PanelAlquileres extends javax.swing.JFrame {
     }//GEN-LAST:event_btnBuscarPeliActionPerformed
 
     private void btnSalirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSalirActionPerformed
-        actualizarTxt();
+        actualizarTxtAlquileres();
+        actualizarTxtPeliculas();
         PanelMain volver = new PanelMain();
         volver.setVisible(true);
         this.dispose();
@@ -574,17 +657,17 @@ public class PanelAlquileres extends javax.swing.JFrame {
     private void btnBuscarClienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBuscarClienteActionPerformed
         int nombre = Integer.parseInt(JOptionPane.showInputDialog(rootPane, "ID: "));
         int i = 0;
-        this.indice.clear();
-        while(i < lista.size()){
-            if(nombre == lista.get(i).getIdCliente()){
-                indice.add(i);
+        this.indiceAlquileres.clear();
+        while(i < listaAlquileres.size()){
+            if(nombre == listaAlquileres.get(i).getIdCliente()){
+                indiceAlquileres.add(i);
             }
                 i++;
         }
         
-        if(this.indice.size() > 0){
+        if(this.indiceAlquileres.size() > 0){
             secondList = true;
-            actualizar(indice);       
+            actualizarAlquiladas(indiceAlquileres);       
         }else{
             JOptionPane.showMessageDialog(rootPane, "El cliente no tiene alquileres vigentes.");
         }
@@ -593,28 +676,64 @@ public class PanelAlquileres extends javax.swing.JFrame {
     private void btnRegresarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRegresarActionPerformed
         limpiarTexto();
         secondList = false;
-        actualizar(null);
+        actualizarAlquiladas(null);
         
         
     }//GEN-LAST:event_btnRegresarActionPerformed
+
+    private void btnRentarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRentarActionPerformed
+        
+        
+        String fecha = JOptionPane.showInputDialog("Ingrese la fecha(DD/MM/AA) : ");
+        
+        int i = listUsuarios.getSelectedIndex();
+        int j = listPeliculas.getSelectedIndex();
+        
+        Pelicula pelicula = listaPeliculas.get(j);
+        pelicula.restStock();
+        listaPeliculas.set(j, pelicula);
+        
+        PeliculaRentada alquiler = new PeliculaRentada(pelicula.getId(), pelicula.getNombre(), listaClientes.get(i).getIdCliente(), fecha);
+        listaAlquileres.add(alquiler);
+        
+        actualizarAlquiladas(null);
+        actualizarPeliculas();
+    }//GEN-LAST:event_btnRentarActionPerformed
     
-    private void actualizar(List<Integer> indiceAct){
+    
+    private void actualizarAlquiladas(List<Integer> indiceAct){
         DefaultListModel dato = new DefaultListModel();
         PeliculaRentada pelicula = new PeliculaRentada();
         if(indiceAct == null){
-            for (int i = 0; i < lista.size(); i++) {  
-                pelicula = lista.get(i);
+            for (int i = 0; i < listaAlquileres.size(); i++) {  
+                pelicula = listaAlquileres.get(i);
                 dato.addElement(pelicula.toString());
             }
         }else{
             for (int i = 0; i < indiceAct.size(); i++) {                
-                pelicula = lista.get(indiceAct.get(i));
+                pelicula = listaAlquileres.get(indiceAct.get(i));
                 dato.addElement(pelicula.toString());
             }
         }
-        this.listClientes.setModel(dato);
-        listClientes.clearSelection();
+        this.listAlquileres.setModel(dato);
+        listAlquileres.clearSelection();
     }
+    private void actualizarPeliculas(){
+        DefaultListModel dato = new DefaultListModel();
+        Pelicula pelicula = new Pelicula();
+        
+
+        
+        for (int i = 0; i < listaPeliculas.size(); i++) {  
+            pelicula = listaPeliculas.get(i);
+            
+            if(pelicula.getStock() > 0){dato.addElement(pelicula.toString());}
+        }
+        
+        this.listPeliculas.setModel(dato);
+        listPeliculas.clearSelection();
+    }
+    
     
     private void limpiarTexto(){
         this.txtNombre.setText(null);
@@ -624,11 +743,11 @@ public class PanelAlquileres extends javax.swing.JFrame {
         
     }
     
-    private void actualizarTxt(){       
+    private void actualizarTxtAlquileres(){       
         try {
             BufferedWriter writer = new BufferedWriter(new FileWriter("rentadas.txt"));
-            for (int i = 0; i < lista.size(); i++) {  
-                writer.write(rentaToString(lista.get(i))+ "\n");
+            for (int i = 0; i < listaAlquileres.size(); i++) {  
+                writer.write(rentaToString(listaAlquileres.get(i))+ "\n");
             }
                 writer.close();
             
@@ -637,7 +756,19 @@ public class PanelAlquileres extends javax.swing.JFrame {
         }
 
     }
-   
+    private void actualizarTxtPeliculas(){       
+        try {
+            BufferedWriter writer = new BufferedWriter(new FileWriter("peliculas.txt"));
+            for (int i = 0; i < listaPeliculas.size(); i++) {  
+                writer.write(peliToString(listaPeliculas.get(i))+ "\n");
+            }
+                writer.close();
+            
+        } catch (IOException ex) {
+            Logger.getLogger(PanelPeliculas.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+    }
     /**
      * @param args the command line arguments
      */
@@ -681,6 +812,7 @@ public class PanelAlquileres extends javax.swing.JFrame {
     private javax.swing.JButton btnLimpiar;
     private javax.swing.JButton btnMostrar;
     private javax.swing.JButton btnRegresar;
+    private javax.swing.JButton btnRentar;
     private javax.swing.JButton btnSalir;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
@@ -690,7 +822,7 @@ public class PanelAlquileres extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JTabbedPane jTabbedPane1;
-    private javax.swing.JList<String> listClientes;
+    private javax.swing.JList<String> listAlquileres;
     private javax.swing.JList<String> listPeliculas;
     private javax.swing.JList<String> listUsuarios;
     private javax.swing.JToggleButton tglFecha;

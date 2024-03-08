@@ -24,9 +24,9 @@ public class Main {
         
         //PanelClientes prueba = new PanelClientes();
         
-        //PanelAlquileres prueba = new PanelAlquileres();
+        PanelAlquileres prueba = new PanelAlquileres();
         
-        PanelMain prueba = new PanelMain();
+        //PanelMain prueba = new PanelMain();
         
         prueba.show();
 

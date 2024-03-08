@@ -24,7 +24,7 @@ public class Pelicula {
         this.nombre = nombre;
         this.stock = stock;
     }
-
+    
     public Pelicula(int id, int stock, String nombre, String autor, String paisDeOrigen, int duracion, String genero) {
         
         this.id = id;
@@ -43,9 +43,7 @@ public class Pelicula {
     public String getNombre() {
         return nombre;
     }
-    public String toString(){
-        return id + "     \t" + nombre + "\t" + stock;
-    }
+    
 
    public int getStock() {
         return stock;
@@ -65,6 +63,15 @@ public class Pelicula {
 
     public String getGenero() {
         return genero;
+    }
+    public String toString(){
+        return id + "     \t" + nombre + "\t" + stock;
+    }
+    public void restStock(){
+        this.stock --;
+    }
+    public void addStock(){
+        this.stock ++;
     }
     
 }

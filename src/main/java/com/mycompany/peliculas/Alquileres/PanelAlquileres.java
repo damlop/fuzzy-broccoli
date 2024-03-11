@@ -15,6 +15,7 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -481,23 +482,7 @@ public class PanelAlquileres extends javax.swing.JFrame {
     }//GEN-LAST:event_listAlquileresMouseClicked
 
     private void listAlquileresValueChanged(javax.swing.event.ListSelectionEvent evt) {//GEN-FIRST:event_listAlquileresValueChanged
-        
-        PeliculaRentada pelicula = new PeliculaRentada();
-        int i = this.listAlquileres.getSelectedIndex();
-        
-        if(this.secondList){     
-            int j = this.indiceAlquileres.get(i);
-            pelicula = listaAlquileres.get(j);
-        }else{
-            pelicula = listaAlquileres.get(i);
-        }
-        
-        this.txtCliente.setText(Integer.toString(pelicula.getIdCliente()));
-        this.txtFecha.setText(pelicula.getFechaPedida());
-        this.txtNombre.setText(pelicula.getNombre());
-        this.txtID.setText(Integer.toString(pelicula.getId()));
 
-        modificar = true;
     }//GEN-LAST:event_listAlquileresValueChanged
 
     private void txtIDActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtIDActionPerformed
@@ -615,7 +600,7 @@ public class PanelAlquileres extends javax.swing.JFrame {
             listaAlquileres.remove(i);
             actualizarAlquiladas(null);
         }  
-        /*
+        
         i = 0;
         while(!titulo.equalsIgnoreCase(listaPeliculas.get(i).getNombre())){
             i ++;
@@ -623,7 +608,7 @@ public class PanelAlquileres extends javax.swing.JFrame {
         listaPeliculas.get(i).addStock();
         
         actualizarPeliculas();
-        */
+        
     }//GEN-LAST:event_btnEliminarActionPerformed
 
     private void btnBuscarPeliActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBuscarPeliActionPerformed
@@ -683,12 +668,13 @@ public class PanelAlquileres extends javax.swing.JFrame {
 
     private void btnRentarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRentarActionPerformed
         
-        
-        String fecha = JOptionPane.showInputDialog("Ingrese la fecha(DD/MM/AA) : ");
-        
         int i = listUsuarios.getSelectedIndex();
         int j = listPeliculas.getSelectedIndex();
-        
+        if(i != -1 && j != -1){
+        Calendar c1 = Calendar.getInstance();
+        String fecha = c1.get(Calendar.DAY_OF_MONTH) + "/" 
+                        + (c1.get(Calendar.MONTH)+1) + "/" + c1.get(Calendar.YEAR); 
+
         Pelicula pelicula = listaPeliculas.get(j);
         pelicula.restStock();
         listaPeliculas.set(j, pelicula);
@@ -698,6 +684,12 @@ public class PanelAlquileres extends javax.swing.JFrame {
         
         actualizarAlquiladas(null);
         actualizarPeliculas();
+        
+        }else if(i == -1){
+            JOptionPane.showMessageDialog(rootPane, "Seleccione un usuario.");
+        }else{
+            JOptionPane.showMessageDialog(rootPane, "Seleccione una pelicula.");
+        }
     }//GEN-LAST:event_btnRentarActionPerformed
     
     
@@ -721,8 +713,6 @@ public class PanelAlquileres extends javax.swing.JFrame {
     private void actualizarPeliculas(){
         DefaultListModel dato = new DefaultListModel();
         Pelicula pelicula = new Pelicula();
-        
-
         
         for (int i = 0; i < listaPeliculas.size(); i++) {  
             pelicula = listaPeliculas.get(i);

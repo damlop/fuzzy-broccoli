@@ -34,14 +34,14 @@ public class Main {
          * -listar peliculas    R
          * -listar rentadas     R
          * -listar clientes     R
-         * -alquilar pelicula   
-         * -devolver pelicula
+         * -alquilar pelicula   R
+         * -devolver pelicula   R
          * -agregar pelicula    R
          * -eliminar pelicula   R
          * -agregar cliente     R
          * -remover cliente     R
          * -conectar paneles    R
-         * -peliculas -> alquileres -> clientes
+         * -peliculas -> alquileres -> clientes R
          * -base de datos
          */
 

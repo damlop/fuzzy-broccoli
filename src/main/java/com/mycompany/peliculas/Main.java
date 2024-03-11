@@ -24,9 +24,9 @@ public class Main {
         
         //PanelClientes prueba = new PanelClientes();
         
-        //PanelAlquileres prueba = new PanelAlquileres();
+        PanelAlquileres prueba = new PanelAlquileres();
         
-        PanelMain prueba = new PanelMain();
+        //PanelMain prueba = new PanelMain();
         
         prueba.show();
 
@@ -34,14 +34,14 @@ public class Main {
          * -listar peliculas    R
          * -listar rentadas     R
          * -listar clientes     R
-         * -alquilar pelicula   
-         * -devolver pelicula
+         * -alquilar pelicula   R
+         * -devolver pelicula   R
          * -agregar pelicula    R
          * -eliminar pelicula   R
          * -agregar cliente     R
          * -remover cliente     R
          * -conectar paneles    R
-         * -peliculas -> alquileres -> clientes
+         * -peliculas -> alquileres -> clientes R
          * -base de datos
          */
 

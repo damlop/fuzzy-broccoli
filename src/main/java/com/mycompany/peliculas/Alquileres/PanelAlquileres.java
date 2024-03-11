@@ -539,7 +539,11 @@ public class PanelAlquileres extends javax.swing.JFrame {
             actualizarAlquiladas(null);
         }
     }//GEN-LAST:event_tglNombreActionPerformed
-
+    private int fechaPedidaToInt(String fecha){
+        String[] aux = fecha.split("/");
+        int fechaInt = Integer.parseInt(aux[0]) + Integer.parseInt(aux[1]) * 100 + Integer.parseInt(aux[2]) * 10000;
+        return fechaInt;
+    }
     private void tglFechaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_tglFechaActionPerformed
         int i = 0;
         boolean cambio = true;
@@ -547,7 +551,7 @@ public class PanelAlquileres extends javax.swing.JFrame {
         while(i < listaAlquileres.size()-1 && cambio) {
             cambio = false;
             for (int j = 0; j < listaAlquileres.size()-1-i; j++) {
-                if(listaAlquileres.get(j).getFechaPedida().equalsIgnoreCase(listaAlquileres.get(1+j).getFechaPedida())){
+                if(fechaPedidaToInt(listaAlquileres.get(j).getFechaPedida()) > fechaPedidaToInt(listaAlquileres.get(1+j).getFechaPedida())){
                     pelicula = listaAlquileres.get(j);
                     listaAlquileres.set(j, listaAlquileres.get(j+1));
                     listaAlquileres.set(j+1, pelicula);
